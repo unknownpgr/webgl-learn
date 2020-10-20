@@ -211,16 +211,16 @@
             .add(baseMesh, "height", 0.1, 2, 0.1)
             .name("height")
             .onChange(updateLuxo);
+          folder
+            .add(baseDisc, "angle", 0, 360, 1)
+            .name("Base disc angle")
+            .onChange(updateLuxo);
+
           folder.open();
         }
 
-        gui
-          .add(baseDisc, "angle", 0, 360, 1)
-          .name("Base disc angle")
-          .onChange(updateLuxo);
-
         {
-          let folder = gui.addFolder("Arm length (blue)");
+          let folder = gui.addFolder("Arm Length (blue)");
           folder
             .add(upperArmMesh, "height", -room.width / 2, room.width / 2, 1)
             .name("Upper arm length")
@@ -233,7 +233,7 @@
         }
 
         {
-          let folder = gui.addFolder("Joint angle (green)");
+          let folder = gui.addFolder("Joint Angle (green)");
 
           folder
             .add(joint1, "angle", 0, 360, 1)
@@ -254,7 +254,7 @@
         }
 
         {
-          let folder = gui.addFolder("Light bulb");
+          let folder = gui.addFolder("Light Bulb");
 
           folder
             .add(lightBulb, "angle", 0, 360, 1)
