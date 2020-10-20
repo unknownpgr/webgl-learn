@@ -106,33 +106,31 @@
       }
 
       // Lower Arm
-      const [lowerArm, lowerArmMesh] = getCylinder(0.1, 5, "blue");
+      const [lowerArm, lowerArmMesh] = getCylinder(0.1, 1, "blue");
       {
         lowerArm.angle = 20;
-        lowerArmMesh.mesh.position.y = lowerArmMesh.height / 2;
+        lowerArmMesh.height = 3;
         joint1.add(lowerArm);
       }
 
       // Lower Arm Joint
       const [joint2, joint2Mesh] = getCylinder(0.4, 0.8, "green");
       {
-        joint2.position.y = lowerArmMesh.height;
         joint2Mesh.mesh.rotation.z = Math.PI / 2;
         lowerArm.add(joint2);
       }
 
       // Upper Arm
-      const [upperArm, upperArmMesh] = getCylinder(0.1, 3, "blue");
+      const [upperArm, upperArmMesh] = getCylinder(0.1, 1, "blue");
       {
         upperArm.angle = 20;
-        upperArmMesh.mesh.position.y = upperArmMesh.height / 2;
+        upperArmMesh.height = 3;
         joint2.add(upperArm);
       }
 
       // Upper Arm Joint
       const [joint3, joint3Mesh] = getCylinder(0.4, 0.8, "green");
       {
-        joint3.position.y = upperArmMesh.height;
         joint3Mesh.mesh.rotation.z = Math.PI / 2;
         upperArm.add(joint3);
       }
@@ -176,28 +174,51 @@
         baseDisc.rotation.y = THREE.MathUtils.degToRad(baseDisc.angle);
         baseDiscMesh.mesh.position.y = baseDiscMesh.height / 2;
 
+        lowerArmMesh.mesh.scale.y = lowerArmMesh.height;
         lowerArm.rotation.x = THREE.MathUtils.degToRad(lowerArm.angle);
+        lowerArmMesh.mesh.position.y = lowerArmMesh.height / 2;
+
+        joint2.position.y = lowerArmMesh.height;
+
+        upperArmMesh.mesh.scale.y = upperArmMesh.height;
         upperArm.rotation.x = THREE.MathUtils.degToRad(upperArm.angle);
+        upperArmMesh.mesh.position.y = upperArmMesh.height / 2;
+
+        joint3.position.y = upperArmMesh.height;
       }
 
       updateLuxo();
       {
         const gui = new GUI();
-        let folder;
-        folder = gui.addFolder("base (red box)");
-        folder
-          .add(base.position, "x", -room.width / 2, room.width / 2, 1)
-          .name("x")
-          .onChange(updateLuxo);
-        folder
-          .add(base.position, "z", -room.width / 2, room.width / 2, 1)
-          .name("z")
-          .onChange(updateLuxo);
-        folder
-          .add(baseMesh, "height", 0.1, 2, 0.1)
-          .name("height")
-          .onChange(updateLuxo);
-        folder.open();
+        {
+          let folder = gui.addFolder("Base (red box)");
+          folder
+            .add(base.position, "x", -room.width / 2, room.width / 2, 1)
+            .name("x")
+            .onChange(updateLuxo);
+          folder
+            .add(base.position, "z", -room.width / 2, room.width / 2, 1)
+            .name("z")
+            .onChange(updateLuxo);
+          folder
+            .add(baseMesh, "height", 0.1, 2, 0.1)
+            .name("height")
+            .onChange(updateLuxo);
+          folder.open();
+        }
+
+        {
+          let folder = gui.addFolder("Arm length (blue)");
+          folder
+            .add(upperArmMesh, "height", -room.width / 2, room.width / 2, 1)
+            .name("Upper arm length")
+            .onChange(updateLuxo);
+          folder
+            .add(lowerArmMesh, "height", -room.width / 2, room.width / 2, 1)
+            .name("Lower arm length")
+            .onChange(updateLuxo);
+          folder.open();
+        }
 
         gui
           .add(baseDisc, "angle", 0, 360, 1)
