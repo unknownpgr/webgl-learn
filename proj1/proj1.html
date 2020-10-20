@@ -29,7 +29,7 @@
   </body>
   <script type="module">
     import * as THREE from "../resources/threejs/r119/build/three.module.js";
-    import { OBJLoader } from "../resources/threejs/r119/examples/jsm/loaders/OBJLoader.js";
+    import { GLTFLoader } from "../resources/threejs/r119/examples/jsm/loaders/GLTFLoader.js";
     import { OrbitControls } from "../resources/threejs/r119/examples/jsm/controls/OrbitControls.js";
     import { GUI } from "../3rdparty/dat.gui.module.js";
 
@@ -51,27 +51,11 @@
       return [frame, obj];
     }
 
-    function loadObj(objFile, textureFile, callback) {
-      let object;
-      let texture;
-
-      var manager = new THREE.LoadingManager(() => {
-        object.traverse(function (child) {
-          if (child.isMesh) child.material.map = texture;
-        });
-        callback(object);
-      });
-      manager.onProgress = console.log;
-
-      // Load texture
-      let textureLoader = new THREE.TextureLoader(manager);
-      texture = textureLoader.load(textureFile);
-
-      // Load model
-      let objLoader = new OBJLoader(manager);
-      objLoader.load(
-        objFile,
-        (obj) => (object = obj),
+    function loadGLTF(gltfFile, textureFile, callback) {
+      let gltfLoader = new GLTFLoader();
+      gltfLoader.load(
+        gltfFile,
+        (gltf) => callback(gltf.scene),
         (xhr) => {},
         console.error
       );
@@ -192,9 +176,9 @@
 
       // Object
       {
-        loadObj(
-          "/models/just-a-girl/source/sketch/sketch/final_v01.obj",
-          "/models/just-a-girl/source/sketch/sketch/texture/body.png",
+        loadGLTF(
+          "/models/just_a_girl/scene.gltf",
+          "/models/just_a_girl/textures/lambert7SG_baseColor.png",
           (obj) => {
             obj.scale.set(0.05, 0.05, 0.05);
             scene.add(obj);
