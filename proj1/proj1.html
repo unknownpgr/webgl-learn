@@ -153,6 +153,17 @@
       lightBulb.position.y = 0.9;
       lampHead.add(lightBulb);
 
+      // Spot light
+      var spotLight = new THREE.SpotLight(0xffffff);
+      spotLight.position.set(0, 0, 0);
+      spotLight.target.position.set(0, 1, 0);
+      lightBulb.add(spotLight.target);
+      lightBulb.add(spotLight);
+
+      // Helper
+      var spotLightHelper = new THREE.SpotLightHelper(spotLight);
+      scene.add(spotLightHelper);
+
       function updateLuxo() {
         base.position.y = baseMesh.height / 2;
         baseMesh.mesh.scale.set(
@@ -245,6 +256,7 @@
           camera.updateProjectionMatrix();
         }
         renderer.render(scene, camera);
+        spotLightHelper.update();
         requestAnimationFrame(render);
       }
       requestAnimationFrame(render);
