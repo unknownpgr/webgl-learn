@@ -33,6 +33,7 @@
     import { OrbitControls } from "../resources/threejs/r119/examples/jsm/controls/OrbitControls.js";
     import { GUI } from "../3rdparty/dat.gui.module.js";
 
+    // Create cylinder
     function getCylinder(radius, height, color, segs = 8) {
       const frame = new THREE.Object3D();
       const obj = { radius, height, segs };
@@ -51,6 +52,7 @@
       return [frame, obj];
     }
 
+    // Load GLTF file from given path
     function loadGLTF(gltfFile, callback) {
       let gltfLoader = new GLTFLoader();
       gltfLoader.load(
@@ -69,6 +71,7 @@
         console.error
       );
     }
+
     function main() {
       const canvas = document.querySelector("#webgl");
       const renderer = new THREE.WebGLRenderer({ canvas });
@@ -103,10 +106,10 @@
       }
 
       // baseMesh
-      const baseMesh = { width: 4, height: 1, color: "red" };
+      const baseMesh = { height: 1, color: "red" };
       {
         baseMesh.mesh = new THREE.Mesh(
-          new THREE.BoxBufferGeometry(1, 1, 1),
+          new THREE.BoxBufferGeometry(4, 1, 4),
           new THREE.MeshPhongMaterial({ color: baseMesh.color })
         );
         base.add(baseMesh.mesh);
@@ -187,59 +190,90 @@
       spotLightHelper.visible = false;
       scene.add(spotLightHelper);
 
-      // Object
+      // Some 3D models
       {
+        let d = 6;
+
         loadGLTF("/models/just_a_girl/scene.gltf", (obj) => {
           obj.scale.set(0.05, 0.05, 0.05);
-          scene.add(obj);
-        });
-        loadGLTF("/models/hatsune_miku_chibi_w_stand/scene.gltf", (obj) => {
-          // obj.scale.set(0.05, 0.05, 0.05);
+          obj.position.set(-d, 0, -d);
           scene.add(obj);
         });
         loadGLTF("/models/kizuna_ai_x_azurlane/scene.gltf", (obj) => {
           obj.scale.set(0.25, 0.25, 0.25);
+          obj.position.set(d, 0, -d);
           scene.add(obj);
         });
         loadGLTF("/models/old_barrel/scene.gltf", (obj) => {
-          obj.scale.set(0.1, 0.1, 0.1);
+          obj.scale.set(0.05, 0.05, 0.05);
+          obj.position.set(d, 0, d);
+          scene.add(obj);
+        });
+        loadGLTF("/models/among_us_character/scene.gltf", (obj) => {
+          obj.scale.set(0.01, 0.01, 0.01);
+          console.log();
+          obj.position.set(-d, 1.5, d);
           scene.add(obj);
         });
       }
 
-      function updateLuxo() {
-        base.position.y = baseMesh.height / 2;
-        baseMesh.mesh.scale.set(
-          baseMesh.width,
-          baseMesh.height,
-          baseMesh.width
-        );
+      // Point light
+      {
+        const color = 0xffffff;
+        const intensity = 0.5;
+        const light = new THREE.PointLight(color, intensity);
+        light.position.set(0, room.height, 0);
+        scene.add(light);
 
+        const helper = new THREE.PointLightHelper(light);
+        scene.add(helper);
+      }
+
+      // An ambient light
+      {
+        const light = new THREE.AmbientLight("white", 0.3);
+        scene.add(light);
+      }
+
+      function updateLuxo() {
+        // Set base
+        base.position.y = baseMesh.height / 2;
+        baseMesh.mesh.scale.y = baseMesh.height;
+
+        // Set base disc
         baseDisc.position.y = baseMesh.height / 2;
         baseDisc.rotation.y = THREE.MathUtils.degToRad(baseDisc.angle);
         baseDiscMesh.mesh.position.y = baseDiscMesh.height / 2;
 
+        // Set base joint angle
         joint1.position.y = baseDiscMesh.height;
         joint1.rotation.x = THREE.MathUtils.degToRad(joint1.angle);
 
+        // Set lower arm length
         lowerArmMesh.mesh.scale.y = lowerArmMesh.height;
         lowerArmMesh.mesh.position.y = lowerArmMesh.height / 2;
 
+        // Set middle join angle
         joint2.position.y = lowerArmMesh.height;
         joint2.rotation.x = THREE.MathUtils.degToRad(joint2.angle);
 
+        // Set upper arm length
         upperArmMesh.mesh.scale.y = upperArmMesh.height;
         upperArmMesh.mesh.position.y = upperArmMesh.height / 2;
 
+        // Set head joint angle
         joint3.position.y = upperArmMesh.height;
         joint3.rotation.x = THREE.MathUtils.degToRad(joint3.angle);
 
+        // Set spot light angle
         spotLight.angle = THREE.MathUtils.degToRad(lightBulb.angle);
       }
 
       updateLuxo();
       {
         const gui = new GUI();
+
+        // Base settings
         {
           let folder = gui.addFolder("Base (red box)");
           folder
@@ -262,6 +296,7 @@
           folder.open();
         }
 
+        // Arm length settings
         {
           let folder = gui.addFolder("Arm Length (blue)");
           folder
@@ -275,6 +310,7 @@
           folder.open();
         }
 
+        // Joint settings
         {
           let folder = gui.addFolder("Joint Angle (green)");
 
@@ -296,6 +332,7 @@
           folder.open();
         }
 
+        // Light bulb settings
         {
           let folder = gui.addFolder("Light Bulb");
 
@@ -305,26 +342,8 @@
             .onChange(updateLuxo);
 
           folder.add(spotLightHelper, "visible").name("Show helper");
-
           folder.open();
         }
-      }
-
-      {
-        // point light
-        const color = 0xffffff;
-        const intensity = 0.5;
-        const light = new THREE.PointLight(color, intensity);
-        light.position.set(0, room.height, 0);
-        scene.add(light);
-
-        const helper = new THREE.PointLightHelper(light);
-        scene.add(helper);
-      }
-      {
-        // an ambient light
-        const light = new THREE.AmbientLight("white", 0.3);
-        scene.add(light);
       }
 
       const fov = 45;
@@ -355,8 +374,8 @@
           camera.aspect = canvas.clientWidth / canvas.clientHeight;
           camera.updateProjectionMatrix();
         }
-        renderer.render(scene, camera);
         spotLightHelper.update();
+        renderer.render(scene, camera);
         requestAnimationFrame(render);
       }
       requestAnimationFrame(render);
