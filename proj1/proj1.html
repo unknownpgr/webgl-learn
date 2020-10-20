@@ -118,14 +118,14 @@
       // Base Disk
       const [baseDisc, baseDiscMesh] = getCylinder(1, 0.2, "orange");
       {
-        baseDisc.angle = 20;
+        baseDisc.angle = 45;
         base.add(baseDisc);
       }
 
       // Base Joint
       const [joint1, joint1Mesh] = getCylinder(0.4, 0.8, "green");
       {
-        joint1.angle = 20;
+        joint1.angle = -45;
         joint1Mesh.mesh.rotation.z = Math.PI / 2;
         baseDisc.add(joint1);
       }
@@ -133,14 +133,14 @@
       // Lower Arm
       const [lowerArm, lowerArmMesh] = getCylinder(0.1, 1, "blue");
       {
-        lowerArmMesh.height = 3;
+        lowerArmMesh.height = 4;
         joint1.add(lowerArm);
       }
 
       // Lower Arm Joint
       const [joint2, joint2Mesh] = getCylinder(0.4, 0.8, "green");
       {
-        joint2.angle = 20;
+        joint2.angle = 75;
         joint2Mesh.mesh.rotation.z = Math.PI / 2;
         lowerArm.add(joint2);
       }
@@ -148,14 +148,14 @@
       // Upper Arm
       const [upperArm, upperArmMesh] = getCylinder(0.1, 1, "blue");
       {
-        upperArmMesh.height = 3;
+        upperArmMesh.height = 6;
         joint2.add(upperArm);
       }
 
       // Upper Arm Joint
       const [joint3, joint3Mesh] = getCylinder(0.4, 0.8, "green");
       {
-        joint3.angle = 20;
+        joint3.angle = 90;
         joint3Mesh.mesh.rotation.z = Math.PI / 2;
         upperArm.add(joint3);
       }
@@ -196,23 +196,23 @@
 
         loadGLTF("/models/just_a_girl/scene.gltf", (obj) => {
           obj.scale.set(0.05, 0.05, 0.05);
-          obj.position.set(-d, 0, -d);
+          obj.position.set(-d, 0, d);
           scene.add(obj);
         });
         loadGLTF("/models/kizuna_ai_x_azurlane/scene.gltf", (obj) => {
           obj.scale.set(0.25, 0.25, 0.25);
-          obj.position.set(d, 0, -d);
+          obj.position.set(d, 0, d);
           scene.add(obj);
         });
         loadGLTF("/models/old_barrel/scene.gltf", (obj) => {
           obj.scale.set(0.05, 0.05, 0.05);
-          obj.position.set(d, 0, d);
+          obj.position.set(d, 0, -d);
           scene.add(obj);
         });
         loadGLTF("/models/among_us_character/scene.gltf", (obj) => {
           obj.scale.set(0.01, 0.01, 0.01);
           console.log();
-          obj.position.set(-d, 1.5, d);
+          obj.position.set(-d, 1.5, -d);
           scene.add(obj);
         });
       }
@@ -300,11 +300,11 @@
         {
           let folder = gui.addFolder("Arm Length (blue)");
           folder
-            .add(upperArmMesh, "height", -room.width / 2, room.width / 2, 1)
+            .add(upperArmMesh, "height", 2, 7, 0.1)
             .name("Upper arm length")
             .onChange(updateLuxo);
           folder
-            .add(lowerArmMesh, "height", -room.width / 2, room.width / 2, 1)
+            .add(lowerArmMesh, "height", 2, 7, 0.1)
             .name("Lower arm length")
             .onChange(updateLuxo);
           folder.open();
@@ -315,17 +315,17 @@
           let folder = gui.addFolder("Joint Angle (green)");
 
           folder
-            .add(joint1, "angle", 0, 360, 1)
+            .add(joint1, "angle", -180, 180, 1)
             .name("Base joint angle")
             .onChange(updateLuxo);
 
           folder
-            .add(joint2, "angle", 0, 360, 1)
+            .add(joint2, "angle", -180, 180, 1)
             .name("Middle joint angle")
             .onChange(updateLuxo);
 
           folder
-            .add(joint3, "angle", 0, 360, 1)
+            .add(joint3, "angle", -180, 180, 1)
             .name("Head joint angle")
             .onChange(updateLuxo);
 
@@ -337,7 +337,7 @@
           let folder = gui.addFolder("Light Bulb");
 
           folder
-            .add(lightBulb, "angle", 0, 360, 1)
+            .add(lightBulb, "angle", 10, 90, 1)
             .name("Angle")
             .onChange(updateLuxo);
 
