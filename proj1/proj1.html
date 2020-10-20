@@ -100,7 +100,7 @@
       // Base Joint
       const [joint1, joint1Mesh] = getCylinder(0.4, 0.8, "green");
       {
-        joint1.position.y = baseDiscMesh.height;
+        joint1.angle = 20;
         joint1Mesh.mesh.rotation.z = Math.PI / 2;
         baseDisc.add(joint1);
       }
@@ -108,7 +108,6 @@
       // Lower Arm
       const [lowerArm, lowerArmMesh] = getCylinder(0.1, 1, "blue");
       {
-        lowerArm.angle = 20;
         lowerArmMesh.height = 3;
         joint1.add(lowerArm);
       }
@@ -116,6 +115,7 @@
       // Lower Arm Joint
       const [joint2, joint2Mesh] = getCylinder(0.4, 0.8, "green");
       {
+        joint2.angle = 20;
         joint2Mesh.mesh.rotation.z = Math.PI / 2;
         lowerArm.add(joint2);
       }
@@ -123,7 +123,6 @@
       // Upper Arm
       const [upperArm, upperArmMesh] = getCylinder(0.1, 1, "blue");
       {
-        upperArm.angle = 20;
         upperArmMesh.height = 3;
         joint2.add(upperArm);
       }
@@ -131,6 +130,7 @@
       // Upper Arm Joint
       const [joint3, joint3Mesh] = getCylinder(0.4, 0.8, "green");
       {
+        joint3.angle = 20;
         joint3Mesh.mesh.rotation.z = Math.PI / 2;
         upperArm.add(joint3);
       }
@@ -149,17 +149,19 @@
         new THREE.MeshPhongMaterial({ color: "white" })
       );
       lightBulb.position.y = 0.9;
+      lightBulb.angle = 15;
       lampHead.add(lightBulb);
 
       // Spot light
-      var spotLight = new THREE.SpotLight(0xffffff);
+      let spotLight = new THREE.SpotLight(0xffffff);
       spotLight.position.set(0, 0, 0);
       spotLight.target.position.set(0, 1, 0);
       lightBulb.add(spotLight.target);
       lightBulb.add(spotLight);
 
       // Helper
-      var spotLightHelper = new THREE.SpotLightHelper(spotLight);
+      let spotLightHelper = new THREE.SpotLightHelper(spotLight);
+      spotLightHelper.visible = false;
       scene.add(spotLightHelper);
 
       function updateLuxo() {
@@ -174,17 +176,22 @@
         baseDisc.rotation.y = THREE.MathUtils.degToRad(baseDisc.angle);
         baseDiscMesh.mesh.position.y = baseDiscMesh.height / 2;
 
+        joint1.position.y = baseDiscMesh.height;
+        joint1.rotation.x = THREE.MathUtils.degToRad(joint1.angle);
+
         lowerArmMesh.mesh.scale.y = lowerArmMesh.height;
-        lowerArm.rotation.x = THREE.MathUtils.degToRad(lowerArm.angle);
         lowerArmMesh.mesh.position.y = lowerArmMesh.height / 2;
 
         joint2.position.y = lowerArmMesh.height;
+        joint2.rotation.x = THREE.MathUtils.degToRad(joint2.angle);
 
         upperArmMesh.mesh.scale.y = upperArmMesh.height;
-        upperArm.rotation.x = THREE.MathUtils.degToRad(upperArm.angle);
         upperArmMesh.mesh.position.y = upperArmMesh.height / 2;
 
         joint3.position.y = upperArmMesh.height;
+        joint3.rotation.x = THREE.MathUtils.degToRad(joint3.angle);
+
+        spotLight.angle = THREE.MathUtils.degToRad(lightBulb.angle);
       }
 
       updateLuxo();
@@ -207,6 +214,11 @@
           folder.open();
         }
 
+        gui
+          .add(baseDisc, "angle", 0, 360, 1)
+          .name("Base disc angle")
+          .onChange(updateLuxo);
+
         {
           let folder = gui.addFolder("Arm length (blue)");
           folder
@@ -220,15 +232,39 @@
           folder.open();
         }
 
-        gui
-          .add(baseDisc, "angle", 0, 360, 1)
-          .name("angle (yellow)")
-          .onChange(updateLuxo);
+        {
+          let folder = gui.addFolder("Joint angle (green)");
 
-        gui
-          .add(lowerArm, "angle", 0, 360, 1)
-          .name("angle (blue)")
-          .onChange(updateLuxo);
+          folder
+            .add(joint1, "angle", 0, 360, 1)
+            .name("Base joint angle")
+            .onChange(updateLuxo);
+
+          folder
+            .add(joint2, "angle", 0, 360, 1)
+            .name("Middle joint angle")
+            .onChange(updateLuxo);
+
+          folder
+            .add(joint3, "angle", 0, 360, 1)
+            .name("Head joint angle")
+            .onChange(updateLuxo);
+
+          folder.open();
+        }
+
+        {
+          let folder = gui.addFolder("Light bulb");
+
+          folder
+            .add(lightBulb, "angle", 0, 360, 1)
+            .name("Angle")
+            .onChange(updateLuxo);
+
+          folder.add(spotLightHelper, "visible").name("Show helper");
+
+          folder.open();
+        }
       }
 
       {
