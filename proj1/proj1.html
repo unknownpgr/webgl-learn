@@ -51,7 +51,7 @@
       return [frame, obj];
     }
 
-    function loadGLTF(gltfFile, textureFile, callback) {
+    function loadGLTF(gltfFile, callback) {
       let gltfLoader = new GLTFLoader();
       gltfLoader.load(
         gltfFile,
@@ -166,6 +166,7 @@
       let spotLight = new THREE.SpotLight(0xffffff);
       spotLight.position.set(0, 0, 0);
       spotLight.target.position.set(0, 1, 0);
+      spotLight.castShadow = true;
       lightBulb.add(spotLight.target);
       lightBulb.add(spotLight);
 
@@ -176,14 +177,22 @@
 
       // Object
       {
-        loadGLTF(
-          "/models/just_a_girl/scene.gltf",
-          "/models/just_a_girl/textures/lambert7SG_baseColor.png",
-          (obj) => {
-            obj.scale.set(0.05, 0.05, 0.05);
-            scene.add(obj);
-          }
-        );
+        // loadGLTF("/models/just_a_girl/scene.gltf", (obj) => {
+        //   obj.scale.set(0.05, 0.05, 0.05);
+        //   scene.add(obj);
+        // });
+        // loadGLTF("/models/hatsune_miku_chibi_w_stand/scene.gltf", (obj) => {
+        //   // obj.scale.set(0.05, 0.05, 0.05);
+        //   scene.add(obj);
+        // });
+        // loadGLTF("/models/kizuna_ai_x_azurlane/scene.gltf", (obj) => {
+        //   obj.scale.set(0.25, 0.25, 0.25);
+        //   scene.add(obj);
+        // });
+        loadGLTF("/models/old_barrel/scene.gltf", (obj) => {
+          obj.scale.set(0.1, 0.1, 0.1);
+          scene.add(obj);
+        });
       }
 
       function updateLuxo() {
