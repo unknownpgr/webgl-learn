@@ -194,22 +194,22 @@
       {
         let d = 6;
 
-        loadGLTF("/models/just_a_girl/scene.gltf", (obj) => {
+        loadGLTF("../models/just_a_girl/scene.gltf", (obj) => {
           obj.scale.set(0.05, 0.05, 0.05);
           obj.position.set(-d, 0, d);
           scene.add(obj);
         });
-        loadGLTF("/models/kizuna_ai_x_azurlane/scene.gltf", (obj) => {
+        loadGLTF("../models/kizuna_ai_x_azurlane/scene.gltf", (obj) => {
           obj.scale.set(0.25, 0.25, 0.25);
           obj.position.set(d, 0, d);
           scene.add(obj);
         });
-        loadGLTF("/models/old_barrel/scene.gltf", (obj) => {
+        loadGLTF("../models/old_barrel/scene.gltf", (obj) => {
           obj.scale.set(0.05, 0.05, 0.05);
           obj.position.set(d, 0, -d);
           scene.add(obj);
         });
-        loadGLTF("/models/among_us_character/scene.gltf", (obj) => {
+        loadGLTF("../models/among_us_character/scene.gltf", (obj) => {
           obj.scale.set(0.01, 0.01, 0.01);
           console.log();
           obj.position.set(-d, 1.5, -d);
