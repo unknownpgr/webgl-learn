@@ -55,7 +55,16 @@
       let gltfLoader = new GLTFLoader();
       gltfLoader.load(
         gltfFile,
-        (gltf) => callback(gltf.scene),
+        (gltf) => {
+          let model = gltf.scene;
+          model.traverse((o) => {
+            if (o.isMesh) {
+              o.castShadow = true;
+              o.receiveShadow = true;
+            }
+          });
+          callback(model);
+        },
         (xhr) => {},
         console.error
       );
@@ -63,6 +72,8 @@
     function main() {
       const canvas = document.querySelector("#webgl");
       const renderer = new THREE.WebGLRenderer({ canvas });
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
       const scene = new THREE.Scene();
       scene.background = new THREE.Color("black");
@@ -79,6 +90,7 @@
         cubeMat.side = THREE.BackSide;
         const mesh = new THREE.Mesh(cubeGeo, cubeMat);
         mesh.position.set(0, room.height / 2, 0);
+        mesh.receiveShadow = true;
         scene.add(mesh);
       }
 
@@ -177,18 +189,18 @@
 
       // Object
       {
-        // loadGLTF("/models/just_a_girl/scene.gltf", (obj) => {
-        //   obj.scale.set(0.05, 0.05, 0.05);
-        //   scene.add(obj);
-        // });
-        // loadGLTF("/models/hatsune_miku_chibi_w_stand/scene.gltf", (obj) => {
-        //   // obj.scale.set(0.05, 0.05, 0.05);
-        //   scene.add(obj);
-        // });
-        // loadGLTF("/models/kizuna_ai_x_azurlane/scene.gltf", (obj) => {
-        //   obj.scale.set(0.25, 0.25, 0.25);
-        //   scene.add(obj);
-        // });
+        loadGLTF("/models/just_a_girl/scene.gltf", (obj) => {
+          obj.scale.set(0.05, 0.05, 0.05);
+          scene.add(obj);
+        });
+        loadGLTF("/models/hatsune_miku_chibi_w_stand/scene.gltf", (obj) => {
+          // obj.scale.set(0.05, 0.05, 0.05);
+          scene.add(obj);
+        });
+        loadGLTF("/models/kizuna_ai_x_azurlane/scene.gltf", (obj) => {
+          obj.scale.set(0.25, 0.25, 0.25);
+          scene.add(obj);
+        });
         loadGLTF("/models/old_barrel/scene.gltf", (obj) => {
           obj.scale.set(0.1, 0.1, 0.1);
           scene.add(obj);
